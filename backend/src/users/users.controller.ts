@@ -1,11 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UseGuards, UsePipes, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RoleGuard } from './guard/role.guard';
 import { Role } from './decorator/role.decorator';
-import { UserRole } from './types/users.types';
+import { type UserPagination, UserRole } from './types/users.types';
+import { NamePipe } from './pipe/name.pipe';
+import { EmailPipe } from './pipe/email.pipe';
+import { PaginationPipe } from './pipe/pagination.pipe';
 
 @Controller('users')
 export class UsersController {
@@ -13,14 +16,21 @@ export class UsersController {
 
   @Post()
   @UseGuards(RoleGuard)
+  @UsePipes(new EmailPipe())
   @Role(UserRole.admin, UserRole.user)
   create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query(PaginationPipe) userPagination: UserPagination) {
+    return { userPagination };
+    // return this.usersService.findAll();
+  }
+
+  @Get('/tests/:name')
+  testName(@Param('name', NamePipe) name: string) {
+    return name;
   }
 
   @Get(':id')

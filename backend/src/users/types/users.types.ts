@@ -21,3 +21,16 @@ export type CreateUser = Pick<User, 'name' | 'email' | 'role' | 'password'>
 
 export type UpdateUser = Partial<Omit<User, 'id'>>
 
+
+export type UserQuery = {
+    page: string;
+    limit: string;
+    name?: string;
+}
+
+export type UserPagination = {
+    currentpage: number;
+    limit: number;
+    skip: number;
+    name?: string
+}
