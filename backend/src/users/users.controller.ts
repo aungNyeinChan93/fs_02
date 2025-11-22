@@ -9,6 +9,7 @@ import { type UserPagination, UserRole } from './types/users.types';
 import { NamePipe } from './pipe/name.pipe';
 import { EmailPipe } from './pipe/email.pipe';
 import { PaginationPipe } from './pipe/pagination.pipe';
+import { AuthTokenGuard } from './guard/auth-token.guard';
 
 @Controller('users')
 export class UsersController {
@@ -34,6 +35,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(AuthTokenGuard)
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
